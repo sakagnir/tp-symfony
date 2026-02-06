@@ -17,17 +17,10 @@ class PostType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            ->add('publishedAt', null, [
-                'widget' => 'single_text'
-            ])
             ->add('picture')
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

@@ -8,15 +8,96 @@
 		<div class="col-12 col-lg-8">
 			<div class="card shadow-sm mb-4">
 				<div class="card-body">
-					<h1 class="card-title h3 mb-4">{{ category.name }}</h1>
+					<h1 class="card-title h3 mb-4">
+						<i class="bi bi-tag"></i>
+						{{ category.name }}</h1>
+
 					<p class="text-muted">
 						<small>
-							<strong>ID:</strong>
+							<strong>Category ID:</strong>
 							{{ category.id }}</small>
+
 					</p>
+					<hr class="my-3">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h5 class="mb-0">
+							<i class="bi bi-file-text"></i>
+							Posts in this category</h5>
+						<span class="badge bg-secondary">{{ posts|length }}</span>
+					</div>
 				</div>
+				<div class="card-body p-0">
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0">
+							<thead class="table-light">
+								<tr>
+									<th style="width: 25%;">Title</th>
+									<th style="width: 35%;">Content</th>
+									<th style="width: 15%;">Status</th>
+									<th style="width: 10%;">Image</th>
+									<th style="width: 15%;">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for post in posts %}
+									<tr>
+										<td>
+											<strong>{{ post.title }}</strong>
+										</td>
+										<td class="text-truncate">{{ post.content }}</td>
+										<td>
+											{% if post.publishedAt %}
+												<span class="badge bg-success">
+													<i class="bi bi-check-circle"></i>
+													Published</span>
+												<br><small class="text-muted">{{ post.publishedAt|date('Y-m-d') }}</small>
+											{% else %}
+												<span class="badge bg-warning">
+													<i class="bi bi-clock"></i>
+													Draft</span>
+											{% endif %}
+										</td>
+										<td>
+											{% if post.picture %}
+												<span class="badge bg-info">
+													<i class="bi bi-image"></i>
+													Yes</span>
+											{% else %}
+												<span class="text-muted">—</span>
+											{% endif %}
+										</td>
+										<td>
+											<div class="btn-group btn-group-sm" role="group">
+												<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-outline-secondary" title="View">
+													<i class="bi bi-eye"></i>
+												</a>
+												{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+													<a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-outline-warning" title="Edit">
+														<i class="bi bi-pencil"></i>
+													</a>
+												{% endif %}
+
+											</div>
+
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="5" class="text-center py-4">
+											<i class="bi bi-inbox text-muted d-block mb-2" style="font-size: 1.5rem;"></i>
+											<span class="text-muted">No posts in this category.</span>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+
 			</div>
 		</div>
+
 		<div class="col-12 col-lg-4">
 			<div class="card shadow-sm">
 				<div class="card-header bg-light">
@@ -24,22 +105,28 @@
 				</div>
 				<div class="card-body">
 					<div class="d-grid gap-2">
-						<a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-warning">
-							<i class="bi bi-pencil"></i>
-							Edit</a>
+						{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+							<a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-warning">
+								<i class="bi bi-pencil"></i>
+								Edit</a>
+						{% endif %}
+
 						<a href="{{ path('app_category_index') }}" class="btn btn-secondary">
 							<i class="bi bi-arrow-left"></i>
 							Back to list</a>
+
 					</div>
 				</div>
 			</div>
 
-			{% if (app.user.roles[0] == 'ROLE_ADMIN')%}
+			{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
 				<div class="card shadow-sm mt-3 border-danger">
 					<div class="card-header bg-danger text-white">
 						<h5 class="mb-0">Danger Zone</h5>
 					</div>
 					<div class="card-body">
+						<p class="text-danger small mb-2">This action will delete the category permanently.</p>
+
 						{{ include('category/_delete_form.html.twig') }}
 					</div>
 				</div>

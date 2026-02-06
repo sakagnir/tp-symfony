@@ -1,46 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Post index
+{% block title %}Article
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex justify-content-between align-items-center mb-3">
-		<h1 class="h3">Posts</h1>
-		<a href="{{ path('app_post_new') }}" class="btn btn-primary">Create new</a>
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="h2 mb-1">
+				<i class="bi bi-file-text"></i>
+				Posts</h1>
+			<small class="text-muted">Total:
+				<span class="badge bg-secondary">{{ posts|length }}</span>
+			</small>
+		</div>
+		{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+			<a href="{{ path('app_post_new') }}" class="btn btn-lg btn-primary">
+				<i class="bi bi-plus-circle"></i>
+				Create new</a>
+		{% endif %}
 	</div>
 
-	<div class="card shadow-sm">
+	<div class="card shadow-sm border-0">
 		<div class="card-body p-0">
 			<div class="table-responsive">
-				<table class="table table-hover mb-0">
+				<table class="table table-hover align-middle mb-0">
 					<thead class="table-light">
 						<tr>
-							<th>Title</th>
-							<th>Content</th>
-							<th>Published</th>
-							<th>Picture</th>
-							<th>Actions</th>
+							<th style="width: 25%;">Title</th>
+							<th style="width: 35%;">Content</th>
+							<th style="width: 15%;">Status</th>
+							<th style="width: 10%;">Image</th>
+							<th style="width: 15%;">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for post in posts %}
 							<tr>
-								<td>{{ post.title }}</td>
-								<td class="text-truncate" style="max-width:300px">{{ post.content }}</td>
-								<td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d') : '' }}</td>
-								<td>{{ post.picture }}</td>
-								{% if app.user %}
-									{% if (app.user.roles[0] == 'ROLE_ADMIN')%}
-										<td>
-											<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-sm btn-outline-secondary me-1">Show</a>
-											<a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-										</td>
+								<td>
+									<strong>{{ post.title }}</strong>
+								</td>
+								<td class="text-truncate">{{ post.content }}</td>
+								<td>
+									{% if post.publishedAt %}
+										<span class="badge bg-success">
+											<i class="bi bi-check-circle"></i>
+											Published</span>
+										<br><small class="text-muted">{{ post.publishedAt|date('Y-m-d') }}</small>
+									{% else %}
+										<span class="badge bg-warning">
+											<i class="bi bi-clock"></i>
+											Draft</span>
 									{% endif %}
-								{% else %}
-									<td>
-										<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-sm btn-outline-secondary me-1">Show</a>
-									</td>
-								{% endif %}
+								</td>
+								<td>
+									{% if post.picture %}
+										<span class="badge bg-info">
+											<i class="bi bi-image"></i>
+											Yes</span>
+									{% else %}
+										<span class="text-muted">—</span>
+									{% endif %}
+								</td>
+								<td>
+									<div class="btn-group btn-group-sm" role="group">
+										<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-outline-secondary" title="View">Show</a>
+										{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+											<a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-outline-warning" title="Edit">Edit</a>
+										{% endif %}
+									</div>
+								</td>
 							</tr>
 						{% else %}
 							<tr>

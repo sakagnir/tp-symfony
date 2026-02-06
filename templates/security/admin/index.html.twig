@@ -1,9 +1,218 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-	tableau de bord
+{% block title %}Admin Dashboard
 {% endblock %}
 
 {% block body %}
-    
+	<div class="mb-4">
+		<h1 class="h2 mb-1">
+			<i class="bi bi-speedometer2"></i>
+			Admin Dashboard</h1>
+		<p class="text-muted small">Welcome back,
+			{{ app.user.firstname|default(app.user.userIdentifier) }}!</p>
+	</div>
+
+	<!-- Statistiques -->
+	<div
+		class="row g-3 mb-4">
+		<!-- Posts Stats -->
+		<div class="col-12 col-sm-6 col-lg-3">
+			<div class="card shadow-sm h-100 border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline">
+						<div>
+							<h6 class="text-muted mb-1">Total Posts</h6>
+							<h3 class="mb-0">{{ posts|length }}</h3>
+						</div>
+						<i class="bi bi-file-text text-primary" style="font-size: 2rem;"></i>
+					</div>
+				</div>
+				<div class="card-footer bg-light text-center">
+					<a href="{{ path('app_post_index') }}" class="text-decoration-none small">View Posts →</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Comments Stats -->
+		<div class="col-12 col-sm-6 col-lg-3">
+			<div class="card shadow-sm h-100 border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline">
+						<div>
+							<h6 class="text-muted mb-1">Total Comments</h6>
+							<h3 class="mb-0">{{ comments|length }}</h3>
+						</div>
+						<i class="bi bi-chat-left-text text-info" style="font-size: 2rem;"></i>
+					</div>
+				</div>
+				<div class="card-footer bg-light text-center">
+					<a href="{{ path('app_comment_index') }}" class="text-decoration-none small">View Comments →</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Categories Stats -->
+		<div class="col-12 col-sm-6 col-lg-3">
+			<div class="card shadow-sm h-100 border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline">
+						<div>
+							<h6 class="text-muted mb-1">Categories</h6>
+							<h3 class="mb-0">{{ categories|length }}</h3>
+						</div>
+						<i class="bi bi-tag text-success" style="font-size: 2rem;"></i>
+					</div>
+				</div>
+				<div class="card-footer bg-light text-center">
+					<a href="{{ path('app_category_index') }}" class="text-decoration-none small">View Categories →</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Users Stats -->
+		<div class="col-12 col-sm-6 col-lg-3">
+			<div class="card shadow-sm h-100 border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-baseline">
+						<div>
+							<h6 class="text-muted mb-1">Users</h6>
+							<h3 class="mb-0">{{ users|length }}</h3>
+						</div>
+						<i class="bi bi-people text-warning" style="font-size: 2rem;"></i>
+					</div>
+				</div>
+				<div class="card-footer bg-light text-center">
+					<a href="{{ path('app_user_index') }}" class="text-decoration-none small">View Users →</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="row g-3">
+		<!-- Actions Rapides -->
+		<div class="col-12 col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light">
+					<h5 class="mb-0">
+						<i class="bi bi-lightning"></i>
+						Quick Actions</h5>
+				</div>
+				<div class="card-body">
+					<div class="row g-2">
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_post_new') }}" class="btn btn-outline-primary w-100">
+								<i class="bi bi-plus-circle"></i>
+								<div class="small">New Post</div>
+							</a>
+						</div>
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_category_new') }}" class="btn btn-outline-success w-100">
+								<i class="bi bi-plus-circle"></i>
+								<div class="small">New Category</div>
+							</a>
+						</div>
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_comment_index') }}" class="btn btn-outline-info w-100">
+								<i class="bi bi-chat-left"></i>
+								<div class="small">Manage Comments</div>
+							</a>
+						</div>
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_post_index') }}" class="btn btn-outline-secondary w-100">
+								<i class="bi bi-file-text"></i>
+								<div class="small">All Posts</div>
+							</a>
+						</div>
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_category_index') }}" class="btn btn-outline-secondary w-100">
+								<i class="bi bi-tag"></i>
+								<div class="small">All Categories</div>
+							</a>
+						</div>
+						<div class="col-6 col-md-4">
+							<a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary w-100">
+								<i class="bi bi-people"></i>
+								<div class="small">All Users</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Contenu Récent -->
+		<div class="col-12 col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light">
+					<h5 class="mb-0">
+						<i class="bi bi-clock-history"></i>
+						Recent Activity</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% set recentPosts = posts|slice(-3)|reverse %}
+						{% for post in recentPosts %}
+							<div class="list-group-item">
+								<div class="d-flex justify-content-between align-items-start">
+									<div class="flex-grow-1">
+										<h6 class="mb-1">
+											<i class="bi bi-file-text text-primary"></i>
+											{{ post.title }}</h6>
+										<small class="text-muted">Posted at
+											{{ post.publishedAt|date('d/m/Y à H:i') }}</small>
+
+									</div>
+									{% if post.publishedAt %}
+										<span class="badge bg-success">Published</span>
+									{% else %}
+										<span class="badge bg-warning">Draft</span>
+									{% endif %}
+								</div>
+							</div>
+						{% endfor %}
+
+						{% if recentPosts|length == 0 %}
+							<div class="list-group-item text-center py-4 text-muted">
+								<i class="bi bi-inbox"></i>
+								No recent posts
+							</div>
+						{% endif %}
+
+						{% set recentComments = comments|slice(-2)|reverse %}
+						{% for comment in recentComments %}
+							<div class="list-group-item">
+								<div class="d-flex justify-content-between align-items-start">
+									<div class="flex-grow-1">
+										<h6 class="mb-1">
+											<i class="bi bi-chat-left-text text-info"></i>
+											New comment</h6>
+										<small class="text-muted">{{ comment.content|slice(0, 50) }}
+											{% if comment.content|length > 50 %}...
+											{% endif %}
+										</small>
+										<br>
+										<small class="text-muted">{{ comment.createdAt|date('Y-m-d H:i') }}</small>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Info Box -->
+	<div class="alert alert-info mt-4 border-0" role="alert">
+		<h6 class="alert-heading">
+			<i class="bi bi-info-circle"></i>
+			System Info</h6>
+		<p class="mb-0 small">You are logged in as
+			<strong>{{ app.user.userIdentifier }}</strong>
+			with role
+			<strong>{{ app.user.roles[0] }}</strong>. Date:
+			<strong>{{ "now"|date("d/m/Y H:i") }}</strong>
+		</p>
+	</div>
 {% endblock %}

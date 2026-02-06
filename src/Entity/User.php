@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
+    #[ORM\Column(length: 64)]
+    private ?string $statut = null;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -233,6 +236,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }

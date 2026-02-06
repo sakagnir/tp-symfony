@@ -1,42 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment index{% endblock %}
+{% block title %}Commentaire
+{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3">Comments</h1>
-        <a href="{{ path('app_comment_new') }}" class="btn btn-primary">Create new</a>
-    </div>
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="h2 mb-1">
+				<i class="bi bi-chat-left-text"></i>
+				Comments</h1>
+			<small class="text-muted">Total:
+				<span class="badge bg-secondary">{{ comments|length }}</span>
+			</small>
+		</div>
+		{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+			<a href="{{ path('app_comment_new') }}" class="btn btn-lg btn-primary">
+				<i class="bi bi-plus-circle"></i>
+				Create new</a>
+		{% endif %}
+	</div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Content</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for comment in comments %}
-                        <tr>
-                            <td class="text-truncate" style="max-width:300px">{{ comment.content }}</td>
-                            <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d') : '' }}</td>
-                            <td>
-                                <a href="{{ path('app_comment_show', {'id': comment.id}) }}" class="btn btn-sm btn-outline-secondary me-1">Show</a>
-                                <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center py-4">No records found</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+	<div class="card shadow-sm border-0">
+		<div class="card-body p-0">
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0">
+					<thead class="table-light">
+						<tr>
+							<th style="width: 50%;">Content</th>
+							<th style="width: 25%;">Created</th>
+							<th style="width: 25%;">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for comment in comments %}
+							<tr>
+								<td class="text-truncate">{{ comment.content }}</td>
+								<td>
+									<small class="text-muted">{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i') : 'N/A' }}</small>
+									{% if comment.createdAt and comment.createdAt > date('-7 days') %}
+										<br><span class="badge bg-info">
+											<i class="bi bi-star"></i>
+											New</span>
+									{% endif %}
+								</td>
+								<td>
+									<div class="btn-group btn-group-sm" role="group">
+										<a href="{{ path('app_comment_show', {'id': comment.id}) }}" class="btn btn-outline-secondary" title="View">Show</a>
+										{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+											<a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-outline-warning" title="Edit">Edit</a>
+										{% endif %}
+									</div>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="3" class="text-center py-5">
+									<i class="bi bi-chat-left display-6 text-muted d-block mb-2"></i>
+									<span class="text-muted">No comments yet.
+										<a href="{{ path('app_comment_new') }}" class="link-primary">Add one now!</a>
+									</span>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 {% endblock %}

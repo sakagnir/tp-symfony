@@ -16,6 +16,9 @@
 							|
 							<strong>Created:</strong>
 							{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i') : 'N/A' }}</small>
+                            |
+                            <strong>Post associé</strong>
+                            {{ post.title }}
 					</p>
 
 					<div class="card-text">
@@ -32,9 +35,11 @@
 				</div>
 				<div class="card-body">
 					<div class="d-grid gap-2">
-						<a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-warning">
-							<i class="bi bi-pencil"></i>
-							Edit</a>
+						{% if app.user and app.user.roles[0] == 'ROLE_ADMIN' %}
+							<a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-warning">
+								<i class="bi bi-pencil"></i>
+								Edit</a>
+						{% endif %}
 						<a href="{{ path('app_comment_index') }}" class="btn btn-secondary">
 							<i class="bi bi-arrow-left"></i>
 							Back to list</a>
@@ -42,7 +47,7 @@
 				</div>
 			</div>
 
-			{% if (app.user.roles[0] == 'ROLE_ADMIN')%}
+			{% if (app.user and app.user.roles[0] == 'ROLE_ADMIN')%}
 				<div class="card shadow-sm mt-3 border-danger">
 					<div class="card-header bg-danger text-white">
 						<h5 class="mb-0">Danger Zone</h5>

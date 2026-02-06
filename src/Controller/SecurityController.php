@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\Comment;
+use App\Entity\Post;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,10 +85,43 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route(path:'/admin', name:'app_admin_index')]
-    public function adminIndex(){
-        return $this->render('security/admin/index.html.twig');
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/admin', name: 'app_admin_index')]
+    public function adminIndex(EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('security/admin/index.html.twig', [
+            'posts' => $entityManager->getRepository(Post::class)->findAll(),
+            'comments' => $entityManager->getRepository(Comment::class)->findAll(),
+            'categories' => $entityManager->getRepository(Category::class)->findAll(),
+            'users' => $entityManager->getRepository(User::class)->findAll(),
+        ]);
     }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/admin/users', name: 'app_user_index')]
+    public function allUsers(EntityManagerInterface $entityManager)
+    {
+        $users = $entityManager->getRepository(User::class)->findAll();
+        return $this->render('security/admin/users.html.twig', [
+            'users'=> $users,
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/admin/users/{id}', name: 'app_user_toggle')]
+    public function userToggle(EntityManagerInterface $entityManager, int $id)
+    {
+        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
+        if($user->getStatut() == 'ACTIF'){
+            $user->setStatut('DESACTIVE');
+        } else {
+            $user->setStatut('ACTIF');
+        }
+        $entityManager->persist($user);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_user_index');
+    }
+
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

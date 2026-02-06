@@ -25,6 +25,7 @@ class AppFixtures extends Fixture
         $admin->setEmail('admin@example.com')
             ->setFirstName('Admin')
             ->setLastName('Super')
+            ->setStatut('ACTIF')
             ->setCreatedAt(new \DateTimeImmutable())
             ->setRoles(['ROLE_ADMIN']);
         $admin->setPassword($this->hasher->hashPassword($admin, 'password'));
@@ -37,6 +38,7 @@ class AppFixtures extends Fixture
             $user->setEmail(sprintf('user%d@example.com', $i))
                 ->setFirstName('User'.$i)
                 ->setLastName('Demo')
+                ->setStatut('DESACTIVE')
                 ->setCreatedAt(new \DateTimeImmutable());
             $user->setPassword($this->hasher->hashPassword($user, 'password'));
             $manager->persist($user);

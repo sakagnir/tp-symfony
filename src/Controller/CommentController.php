@@ -30,6 +30,8 @@ final class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new \DateTimeImmutable('now'));
+            $comment->setUser($this->getUser());
             $entityManager->persist($comment);
             $entityManager->flush();
 
@@ -47,6 +49,7 @@ final class CommentController extends AbstractController
     {
         return $this->render('comment/show.html.twig', [
             'comment' => $comment,
+            'post' => $comment->getPost(),
         ]);
     }
 

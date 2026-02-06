@@ -6,6 +6,7 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -16,9 +17,19 @@ class Post
     #[ORM\Column]
     private ?int $id = null;
 
+
+    #[Assert\NotBlank(message: "Le titre ne doit pas être vide")]
+    #[Assert\Length(
+        min: 5,
+        max: 64,
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le titre doit contenir moins de {{ limit }} caractères"
+    )]
     #[ORM\Column(length: 64)]
     private ?string $title = null;
 
+
+    #[Assert\NotBlank(message: "Le contenu ne doit pas être vide")]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
@@ -32,6 +43,7 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Assert\NotBlank(message: "La categorie ne doit pas être vide")]
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Category $category = null;
 
