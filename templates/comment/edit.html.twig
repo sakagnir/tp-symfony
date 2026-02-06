@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Edit Comment</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Edit the comment text below.</p>
+                    {{ include('comment/_form.html.twig', {'button_label': 'Update'}) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Navigation</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ path('app_comment_index') }}" class="btn btn-secondary w-100"><i class="bi bi-arrow-left"></i> Back to list</a>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Danger Zone</h5>
+                </div>
+                <div class="card-body">
+                        <p class="text-danger small mb-2">Deleting this comment cannot be undone.</p>
+                        {{ include('comment/_delete_form.html.twig') }}
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

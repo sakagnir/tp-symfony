@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post index
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h1 class="h3">Posts</h1>
+		<a href="{{ path('app_post_new') }}" class="btn btn-primary">Create new</a>
+	</div>
+
+	<div class="card shadow-sm">
+		<div class="card-body p-0">
+			<div class="table-responsive">
+				<table class="table table-hover mb-0">
+					<thead class="table-light">
+						<tr>
+							<th>Title</th>
+							<th>Content</th>
+							<th>Published</th>
+							<th>Picture</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for post in posts %}
+							<tr>
+								<td>{{ post.title }}</td>
+								<td class="text-truncate" style="max-width:300px">{{ post.content }}</td>
+								<td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d') : '' }}</td>
+								<td>{{ post.picture }}</td>
+								{% if app.user %}
+									{% if (app.user.roles[0] == 'ROLE_ADMIN')%}
+										<td>
+											<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-sm btn-outline-secondary me-1">Show</a>
+											<a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+										</td>
+									{% endif %}
+								{% else %}
+									<td>
+										<a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-sm btn-outline-secondary me-1">Show</a>
+									</td>
+								{% endif %}
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="6" class="text-center py-4">No records found</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

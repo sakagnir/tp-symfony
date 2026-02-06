@@ -1,17 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+	</head>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
-</html>
+	<title>
+		{% block title %}Welcome!
+		{% endblock %}
+
+	</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %}
+
+
+	{% block javascripts %}
+
+		{% block importmap %}
+			{{ importmap('app') }}
+		{% endblock %}
+	{% endblock %}
+</html></head><body class="bg-white min-vh-100 d-flex flex-column">
+<header class="d-flex bg-dark justify-content-center py-3">
+	<ul class="nav nav-pills">
+		<li class="nav-item">
+			<a href="{{path('app_post_index')}}" class="nav-link active" aria-current="page">Posts</a>
+		</li>
+		<li class="nav-item">
+			<a href="{{path('app_category_index')}}" class="nav-link " aria-current="page">Categories</a>
+
+		</li>
+
+		{% if app.user %}
+			{% if app.user.roles[0] == 'ROLE_ADMIN' %}
+				<li class="nav-item text-primary">
+					<a href="{{path('app_admin_index')}}" class="nav-link " aria-current="page">Tableau de bord</a>
+				</li>
+			{% endif %}
+			<li class="nav-item">
+				<a href="{{path('app_logout')}}" class="nav-link text-light" aria-current="page">logout</a>
+			</li>
+		{% else %}
+			<li class="nav-item">
+				<a href="{{path('app_register')}}" class="nav-link " aria-current="page">Register</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{path('app_login')}}" class="nav-link " aria-current="page">Login</a>
+			</li>
+		{% endif %}
+	</ul>
+</header>
+
+<main class="flex-fill">
+	<div class="container py-4"> {% block body %}{% endblock %}
+
+		</div>
+	</main>
+	<footer class="py-3 bg-dark w-100 mt-auto">
+		<ul class="nav justify-content-center border-bottom pb-3 mb-3">
+			<li class="nav-item">
+				<a href="{{path('app_post_index')}}" class="nav-link px-2 text-body-secondary">Posts</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{path('app_category_index')}}" class="nav-link px-2 text-body-secondary">Categories</a>
+			</li>
+		</ul>
+		<p class="text-center text-light">© 2026 Symfony, Inc</p>
+	</footer>
+
+
+</body></html>
